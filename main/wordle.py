@@ -5,28 +5,21 @@ class Wordle:
         date = datetime.date.today()
         self.date = str(date.day) + "-" + str(date.month) + "-" + str(date.year)
         self.hour = time.hour
-        self.words = {}
+        self.history = {}
+        self.words = []
         self.minute = time.minute
-        self.word = self.pick_word()
+        self.word = self.pick_word().lower()
     def pick_word(self):
-        with open('../data/word_history.txt') as file:
+        with open('./data/word_history.txt', 'r') as file:
             random_pick = random.randint(0, 499)
-            needs_writing = False
             for line in file:
                 (k, v) = line.split()
-                self.words[k] = v
-            if len(self.words) == 0:
-                needs_writing = True
-                with open('../data/words.json') as f:
-                    json_file = json.load(f)
-                    json_file = json_file['words']
-                    self.words[self.date] = json_file[random_pick]
-            else:
-                if self.words[self.date] != None:
-                    needs_writing = False
-                else:
-                    needs_writing = True
-            if needs_writing:
-                for date in self.words:
-                    file.write(date + " " + self.words[date] + "\n")
-            return self.words[self.date]
+                self.history[k] = v
+            if not self.date in self.history:
+                with open('./data/words.json') as f:
+                    json_file = json.load(f)['words']
+                    self.words = json_file
+                    self.history[self.date] = json_file[random_pick]
+                    with open('./data/word_history.txt', 'a') as fn:    
+                        fn.write(self.date + " " + self.history[self.date] + "\n")
+            return self.history[self.date]
