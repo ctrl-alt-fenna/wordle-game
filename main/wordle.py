@@ -9,7 +9,7 @@ class Wordle:
         self.minute = time.minute
         self.word = self.pick_word()
     def pick_word(self):
-        with open('word_history.txt') as file:
+        with open('../data/word_history.txt') as file:
             random_pick = random.randint(0, 499)
             needs_writing = False
             for line in file:
@@ -17,7 +17,7 @@ class Wordle:
                 self.words[k] = v
             if len(self.words) == 0:
                 needs_writing = True
-                with open('words.json') as f:
+                with open('../data/words.json') as f:
                     json_file = json.load(f)
                     json_file = json_file['words']
                     self.words[self.date] = json_file[random_pick]
